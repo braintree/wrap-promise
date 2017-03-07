@@ -38,6 +38,6 @@ myMethod('foo', function (err, response) {
     return;
   }
 
-  // do somethin with response
+  // do something with response
 });
 ```
