@@ -24,7 +24,7 @@
   },
   "keywords": [],
   "author": "Braintree <code@getbraintree.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/braintree/wrap-promise/issues"
   },
