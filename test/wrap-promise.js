@@ -113,7 +113,9 @@ describe('wrapPromise', function () {
 
   describe('wrapPrototype', function () {
     beforeEach(function () {
-      function MyObject() {}
+      function MyObject(value) {
+        this.value = value;
+      }
 
       MyObject.prototype.myAsyncMethod = function (succeed) {
         if (succeed) {
@@ -129,6 +131,10 @@ describe('wrapPromise', function () {
         }
 
         return Promise.reject('boo');
+      };
+
+      MyObject.prototype.myAsyncMethodWithContext = function () {
+        return Promise.resolve(this.value);
       };
 
       MyObject.myStaticMethod = function (succeed) {
@@ -176,7 +182,7 @@ describe('wrapPromise', function () {
     it('ignores the constructor', function () {
       var obj = new this.MyObject();
 
-      expect(obj.constructor.toString()).to.equal('function MyObject() {}');
+      expect(obj.constructor.toString()).to.match(/^function MyObject\(/);
     });
 
     it('can pass in an options object to ignore methods', function () {
@@ -285,6 +291,15 @@ describe('wrapPromise', function () {
           done();
         });
       });
+
+      it('respects `this`', function (done) {
+        var obj = new this.MyObject('foo');
+
+        obj.myAsyncMethodWithContext(function (err, res) {
+          expect(res).to.equal('foo');
+          done();
+        });
+      });
     });
 
     describe('wraps each method on the prototype to and maintains promise behavior', function () {
@@ -320,6 +335,14 @@ describe('wrapPromise', function () {
 
         return returnValue.then(function (res) {
           expect(res).to.equal('yay');
+        });
+      });
+
+      it('respects `this`', function () {
+        var obj = new this.MyObject('foo');
+
+        return obj.myAsyncMethodWithContext().then(function (res) {
+          expect(res).to.equal('foo');
         });
       });
     });
