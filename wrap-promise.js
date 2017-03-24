@@ -18,9 +18,16 @@ function wrapPromise(fn) {
   };
 }
 
-wrapPromise.wrapPrototype = function (target) {
-  var methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
-    return method !== 'constructor' && typeof target.prototype[method] === 'function';
+wrapPromise.wrapPrototype = function (target, options) {
+  var methods, ignoreMethods;
+
+  options = options || {};
+  ignoreMethods = options.ignoreMethods || [];
+
+  methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
+    return method !== 'constructor' &&
+      typeof target.prototype[method] === 'function' &&
+      ignoreMethods.indexOf(method) === -1;
   });
 
   methods.forEach(function (method) {

@@ -63,3 +63,11 @@ module.exports = wrapPromise.wrapPrototype(MyObject);
 ```
 
 Static methods, sync methods on the prototype (though if you pass a function as the last argument of your sync method, you will get an error), and non-function properties on the prototype are ignored.
+
+If there are certain methods you want ignored, you can pass an `ignoreMethods` array.
+
+```js
+module.exports = wrapPromise.wrapPrototype(MyObject, {
+  ignoreMethods: ['myMethodOnThePrototypeIDoNotWantTransformed']
+});
+```

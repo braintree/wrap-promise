@@ -179,6 +179,41 @@ describe('wrapPromise', function () {
       expect(obj.constructor.toString()).to.equal('function MyObject() {}');
     });
 
+    it.only('can pass in an options object to ignore methods', function () {
+      var obj;
+
+      function MyOtherObject() {}
+
+      MyOtherObject.prototype.transformMe = function () {
+        return Promise.resolve('yay');
+      };
+      MyOtherObject.prototype.ignoreMe = function (cb) {
+        cb();
+
+        return 'not a promise';
+      };
+      MyOtherObject.prototype.alsoIgnoreMe = function (cb) {
+        typeof cb;
+        cb();
+
+        return 'also not a promise';
+      };
+
+      wrapPromise.wrapPrototype(MyOtherObject, {
+        ignoreMethods: ['ignoreMe', 'alsoIgnoreMe']
+      });
+
+      obj = new MyOtherObject();
+
+      expect(obj.transformMe(noop)).to.be.undefined;
+      expect(function () {
+        obj.ignoreMe(noop);
+      }).to.not.throw();
+      expect(function () {
+        obj.alsoIgnoreMe(noop);
+      }).to.not.throw();
+    });
+
     describe('wraps each method on the prototype to use callbacks', function () {
       it('happy path', function (done) {
         var obj = new this.MyObject();
