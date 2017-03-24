@@ -19,15 +19,25 @@ function wrapPromise(fn) {
 }
 
 wrapPromise.wrapPrototype = function (target, options) {
-  var methods, ignoreMethods;
+  var methods, ignoreMethods, ignorePrivateMethods;
 
   options = options || {};
   ignoreMethods = options.ignoreMethods || [];
+  ignorePrivateMethods = Boolean(options.ignorePrivateMethods);
 
   methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
-    return method !== 'constructor' &&
-      typeof target.prototype[method] === 'function' &&
-      ignoreMethods.indexOf(method) === -1;
+    var isNotPrivateMethod = true;
+    var isNonConstructorFunction = method !== 'constructor' &&
+      typeof target.prototype[method] === 'function';
+    var isNotAnIgnoredMethod = ignoreMethods.indexOf(method) === -1;
+
+    if (ignorePrivateMethods) {
+      isNotPrivateMethod = method.charAt(0) !== '_';
+    }
+
+    return isNonConstructorFunction &&
+      isNotPrivateMethod &&
+      isNotAnIgnoredMethod;
   });
 
   methods.forEach(function (method) {

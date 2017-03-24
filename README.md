@@ -71,3 +71,11 @@ module.exports = wrapPromise.wrapPrototype(MyObject, {
   ignoreMethods: ['myMethodOnThePrototypeIDoNotWantTransformed']
 });
 ```
+
+If you notate private methods with leading underscores, you can also ignore those by passing `ignorePrivateMethods: true`
+
+```js
+module.exports = wrapPromise.wrapPrototype(MyObject, {
+  ignorePrivateMethods: true
+});
+```
