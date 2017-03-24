@@ -18,4 +18,18 @@ function wrapPromise(fn) {
   };
 }
 
+wrapPromise.wrapPrototype = function (target) {
+  var methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
+    return method !== 'constructor' && typeof target.prototype[method] === 'function';
+  });
+
+  methods.forEach(function (method) {
+    var original = target.prototype[method];
+
+    target.prototype[method] = wrapPromise(original);
+  });
+
+  return target;
+};
+
 module.exports = wrapPromise;

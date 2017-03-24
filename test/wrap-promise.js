@@ -110,4 +110,148 @@ describe('wrapPromise', function () {
       });
     });
   });
+
+  describe('wrapPrototype', function () {
+    beforeEach(function () {
+      function MyObject() {}
+
+      MyObject.prototype.myAsyncMethod = function (succeed) {
+        if (succeed) {
+          return Promise.resolve('yay');
+        }
+
+        return Promise.reject('boo');
+      };
+
+      MyObject.prototype.mySecondAsyncMethod = function (succeed) {
+        if (succeed) {
+          return Promise.resolve('yay');
+        }
+
+        return Promise.reject('boo');
+      };
+
+      MyObject.myStaticMethod = function (succeed) {
+        if (succeed) {
+          return Promise.resolve('yay');
+        }
+
+        return Promise.reject('boo');
+      };
+
+      MyObject.prototype.mySyncMethod = function (succeed) {
+        if (succeed) {
+          return 'yay';
+        }
+
+        return 'boo';
+      };
+
+      MyObject.prototype.propertyOnPrototype = 'Not a function';
+
+      this.MyObject = wrapPromise.wrapPrototype(MyObject);
+    });
+
+    it('ignores static methods', function () {
+      var returnValue = this.MyObject.myStaticMethod(true, function () {});
+
+      // if it had converted it, the return
+      // value would be undefined
+      expect(returnValue).to.be.an.instanceof(Promise);
+    });
+
+    it('ignores sync methods', function () {
+      var obj = new this.MyObject();
+      var returnValue = obj.mySyncMethod(true);
+
+      expect(returnValue).to.equal('yay');
+    });
+
+    it('ignores non-methods on the prototype', function () {
+      var obj = new this.MyObject();
+
+      expect(obj.propertyOnPrototype).to.equal('Not a function');
+    });
+
+    it('ignores the constructor', function () {
+      var obj = new this.MyObject();
+
+      expect(obj.constructor.toString()).to.equal('function MyObject() {}');
+    });
+
+    describe('wraps each method on the prototype to use callbacks', function () {
+      it('happy path', function (done) {
+        var obj = new this.MyObject();
+        var returnValue = 'not undefined';
+
+        returnValue = obj.myAsyncMethod(true, function (err, res) {
+          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
+          expect(err).to.not.exist;
+          expect(res).to.equal('yay');
+          done();
+        });
+      });
+
+      it('sad path', function (done) {
+        var obj = new this.MyObject();
+        var returnValue = 'not undefined';
+
+        returnValue = obj.myAsyncMethod(false, function (err, res) {
+          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
+          expect(res).to.not.exist;
+          expect(err).to.equal('boo');
+          done();
+        });
+      });
+
+      it('works on all protoypical methods', function (done) {
+        var obj = new this.MyObject();
+        var returnValue = 'not undefined';
+
+        returnValue = obj.mySecondAsyncMethod(true, function (err, res) {
+          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
+          expect(err).to.not.exist;
+          expect(res).to.equal('yay');
+          done();
+        });
+      });
+    });
+
+    describe('wraps each method on the prototype to and maintains promise behavior', function () {
+      it('happy path', function () {
+        var obj = new this.MyObject();
+        var returnValue = obj.myAsyncMethod(true);
+
+        expect(returnValue).to.be.an.instanceof(Promise);
+
+        return returnValue.then(function (res) {
+          expect(res).to.equal('yay');
+        });
+      });
+
+      it('sad path', function () {
+        var obj = new this.MyObject();
+        var returnValue = obj.myAsyncMethod(false);
+
+        expect(returnValue).to.be.an.instanceof(Promise);
+
+        return returnValue.then(function () {
+          throw new Error('should not get here');
+        }).catch(function (err) {
+          expect(err).to.equal('boo');
+        });
+      });
+
+      it('works on all protoypical methods', function () {
+        var obj = new this.MyObject();
+        var returnValue = obj.mySecondAsyncMethod(true);
+
+        expect(returnValue).to.be.an.instanceof(Promise);
+
+        return returnValue.then(function (res) {
+          expect(res).to.equal('yay');
+        });
+      });
+    });
+  });
 });

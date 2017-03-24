@@ -41,3 +41,25 @@ myMethod('foo', function (err, response) {
   // do something with response
 });
 ```
+
+### Wrap All Methods on the Prototype
+
+```js
+function MyObject() {}
+
+MyObject.prototype.myAsyncMethod = function () {
+  return new Promise (function (resolve, reject) {
+    //
+  });
+};
+
+MyObject.prototype.myOtherAsyncMethod = function () {
+  return new Promise (function (resolve, reject) {
+    //
+  });
+};
+
+module.exports = wrapPromise.wrapPrototype(MyObject);
+```
+
+Static methods, sync methods on the prototype (though if you pass a function as the last argument of your sync method, you will get an error), and non-function properties on the prototype are ignored.
