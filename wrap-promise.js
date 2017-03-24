@@ -19,19 +19,21 @@ function wrapPromise(fn) {
 }
 
 wrapPromise.wrapPrototype = function (target, options) {
-  var methods, ignoreMethods, ignorePrivateMethods;
+  var methods, ignoreMethods, includePrivateMethods;
 
   options = options || {};
   ignoreMethods = options.ignoreMethods || [];
-  ignorePrivateMethods = Boolean(options.ignorePrivateMethods);
+  includePrivateMethods = options.transformPrivateMethods === true;
 
   methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
-    var isNotPrivateMethod = true;
+    var isNotPrivateMethod;
     var isNonConstructorFunction = method !== 'constructor' &&
       typeof target.prototype[method] === 'function';
     var isNotAnIgnoredMethod = ignoreMethods.indexOf(method) === -1;
 
-    if (ignorePrivateMethods) {
+    if (includePrivateMethods) {
+      isNotPrivateMethod = true;
+    } else {
       isNotPrivateMethod = method.charAt(0) !== '_';
     }
 

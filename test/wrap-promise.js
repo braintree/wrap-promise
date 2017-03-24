@@ -153,6 +153,10 @@ describe('wrapPromise', function () {
         return 'boo';
       };
 
+      MyObject.prototype._myPrivateMethod = function () {
+        return Promise.resolve('yay');
+      };
+
       MyObject.prototype.propertyOnPrototype = 'Not a function';
 
       this.MyObject = wrapPromise.wrapPrototype(MyObject);
@@ -177,6 +181,12 @@ describe('wrapPromise', function () {
       var obj = new this.MyObject();
 
       expect(obj.propertyOnPrototype).to.equal('Not a function');
+    });
+
+    it('ignores private methods', function () {
+      var obj = new this.MyObject();
+
+      expect(obj._myPrivateMethod(noop)).to.be.an.instanceof(Promise);
     });
 
     it('ignores the constructor', function () {
@@ -220,39 +230,25 @@ describe('wrapPromise', function () {
       }).to.not.throw();
     });
 
-    it('can pass in an options object to ignore methods with leading underscores', function () {
+    it('can pass in an options object to include methods with leading underscores', function (done) {
       var obj;
 
       function MyOtherObject() {}
 
-      MyOtherObject.prototype.transformMe = function () {
+      MyOtherObject.prototype._doNotIgnoreMe = function () {
         return Promise.resolve('yay');
-      };
-      MyOtherObject.prototype._ignoreMe = function (cb) {
-        cb();
-
-        return 'not a promise';
-      };
-      MyOtherObject.prototype._alsoIgnoreMe = function (cb) {
-        typeof cb;
-        cb();
-
-        return 'also not a promise';
       };
 
       wrapPromise.wrapPrototype(MyOtherObject, {
-        ignorePrivateMethods: true
+        transformPrivateMethods: true
       });
 
       obj = new MyOtherObject();
 
-      expect(obj.transformMe(noop)).to.be.undefined;
-      expect(function () {
-        obj._ignoreMe(noop);
-      }).to.not.throw();
-      expect(function () {
-        obj._alsoIgnoreMe(noop);
-      }).to.not.throw();
+      obj._doNotIgnoreMe(function (err, res) {
+        expect(res).to.equal('yay');
+        done();
+      });
     });
 
     describe('wraps each method on the prototype to use callbacks', function () {
