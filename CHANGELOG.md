@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-# UNRELEASED
+# 1.1.1
 
 * Publish to npm as scoped package
 
