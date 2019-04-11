@@ -13,7 +13,7 @@ describe('deferred', function () {
 
     def();
 
-    expect(fn).not.to.have.beenCalled;
+    expect(fn).not.to.be.called;
   });
 
   it('can pass arguments to the delayed function', function (done) {
@@ -28,6 +28,6 @@ describe('deferred', function () {
 
     def(1, 2);
 
-    expect(fn).not.to.have.beenCalled;
+    expect(fn).not.to.be.called;
   });
 });
