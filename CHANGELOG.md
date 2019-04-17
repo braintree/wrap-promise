@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-# unreleased
+# 2.0.0
 *Breaking Changes*
 
 * Errors that are thrown in callback functions are now logged to the console (#4)
