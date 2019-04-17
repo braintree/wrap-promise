@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+# unreleased
+*Breaking Changes*
+
+* Errors that are thrown in callback functions are now logged to the console (#4)
+
 # 1.1.1
 
 * Publish to npm as scoped package
