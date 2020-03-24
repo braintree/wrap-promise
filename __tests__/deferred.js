@@ -1,37 +1,37 @@
-var deferred = require('../lib/deferred');
+const deferred = require('../lib/deferred');
 
-describe('deferred', function () {
-  it('delays the call to the function', function (done) {
-    var fn = jest.fn().mockImplementation(function () {
+describe('deferred', () => {
+  test('delays the call to the function', done => {
+    const fn = jest.fn().mockImplementation(function () {
       expect(arguments.length).toBe(0);
 
       done();
     });
-    var def = deferred(fn);
+    const def = deferred(fn);
 
     def();
 
     expect(fn).not.toBeCalled();
   });
 
-  it('can pass arguments to the deferred function', function (done) {
-    var fn = jest.fn().mockImplementation(function (a, b) {
+  test('can pass arguments to the deferred function', done => {
+    const fn = jest.fn().mockImplementation(function (a, b) {
       expect(arguments.length).toBe(2);
       expect(a).toBe(1);
       expect(b).toBe(2);
 
       done();
     });
-    var def = deferred(fn);
+    const def = deferred(fn);
 
     def(1, 2);
 
     expect(fn).not.toBeCalled();
   });
 
-  it('sends message to console if function throws an error', function (done) {
-    var def;
-    var error = new Error('simulated error, disregard in test output');
+  test('sends message to console if function throws an error', done => {
+    let def;
+    const error = new Error('simulated error, disregard in test output');
 
     function funcThatThrows() {
       throw error;
@@ -42,7 +42,7 @@ describe('deferred', function () {
 
     def();
 
-    setTimeout(function () {
+    setTimeout(() => {
       /* eslint-disable no-console */
       expect(console.log).toBeCalledTimes(2);
       expect(console.log).toBeCalledWith('Error in callback function');
