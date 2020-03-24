@@ -1,11 +1,9 @@
-'use strict';
-
 var deferred = require('../lib/deferred');
 
 describe('deferred', function () {
   it('delays the call to the function', function (done) {
-    var fn = this.sandbox.spy(function () {
-      expect(arguments.length).to.equal(0);
+    var fn = jest.fn().mockImplementation(function () {
+      expect(arguments.length).toBe(0);
 
       done();
     });
@@ -13,14 +11,14 @@ describe('deferred', function () {
 
     def();
 
-    expect(fn).not.to.be.called;
+    expect(fn).not.toBeCalled();
   });
 
   it('can pass arguments to the deferred function', function (done) {
-    var fn = this.sandbox.spy(function (a, b) {
-      expect(arguments.length).to.equal(2);
-      expect(a).to.equal(1);
-      expect(b).to.equal(2);
+    var fn = jest.fn().mockImplementation(function (a, b) {
+      expect(arguments.length).toBe(2);
+      expect(a).toBe(1);
+      expect(b).toBe(2);
 
       done();
     });
@@ -28,7 +26,7 @@ describe('deferred', function () {
 
     def(1, 2);
 
-    expect(fn).not.to.be.called;
+    expect(fn).not.toBeCalled();
   });
 
   it('sends message to console if function throws an error', function (done) {
@@ -40,15 +38,15 @@ describe('deferred', function () {
     }
     def = deferred(funcThatThrows);
 
-    this.sandbox.spy(console, 'log');
+    jest.spyOn(console, 'log');
 
     def();
 
     setTimeout(function () {
       /* eslint-disable no-console */
-      expect(console.log).to.be.calledTwice;
-      expect(console.log).to.be.calledWith('Error in callback function');
-      expect(console.log).to.be.calledWith(error);
+      expect(console.log).toBeCalledTimes(2);
+      expect(console.log).toBeCalledWith('Error in callback function');
+      expect(console.log).toBeCalledWith(error);
       /* eslint-enable no-console */
 
       done();

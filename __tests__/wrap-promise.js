@@ -1,5 +1,3 @@
-'use strict';
-
 var wrapPromise = require('../wrap-promise');
 
 function noop() {}
@@ -8,10 +6,10 @@ describe('wrapPromise', function () {
   it('returns a function', function () {
     var fn = wrapPromise(noop);
 
-    expect(fn).to.be.a('function');
+    expect(fn).toBeInstanceOf(Function);
   });
 
-  context('functions without callbacks', function () {
+  describe('functions without callbacks', function () {
     it('invokes first parameter', function () {
       var returnValue = {foo: 'bar'};
       var fn;
@@ -22,7 +20,7 @@ describe('wrapPromise', function () {
 
       fn = wrapPromise(dummy);
 
-      expect(fn()).to.equal(returnValue);
+      expect(fn()).toBe(returnValue);
     });
 
     it('passes argument to first parameter', function (done) {
@@ -32,7 +30,7 @@ describe('wrapPromise', function () {
       };
 
       function dummy(data) {
-        expect(data).to.equal(options);
+        expect(data).toBe(options);
 
         done();
       }
@@ -55,9 +53,9 @@ describe('wrapPromise', function () {
       };
 
       function dummy(one, two, three) {
-        expect(one).to.equal(firstArg);
-        expect(two).to.equal(secondArg);
-        expect(three).to.equal(thirdArg);
+        expect(one).toBe(firstArg);
+        expect(two).toBe(secondArg);
+        expect(three).toBe(thirdArg);
 
         done();
       }
@@ -68,10 +66,10 @@ describe('wrapPromise', function () {
     });
   });
 
-  context('last parameter is a callback', function () {
+  describe('last parameter is a callback', function () {
     it('does not pass callback to the first param function', function () {
       var promise = new Promise(noop);
-      var dummy = this.sandbox.stub().returns(promise);
+      var dummy = jest.fn().mockReturnValue(promise);
       var fn = wrapPromise(dummy);
       var cb = noop;
       var arg1 = {};
@@ -79,18 +77,19 @@ describe('wrapPromise', function () {
 
       fn(arg1, arg2, cb);
 
-      expect(dummy).to.be.calledWithExactly(arg1, arg2);
+      expect(dummy).toBeCalledTimes(1);
+      expect(dummy).toBeCalledWith(arg1, arg2);
     });
 
     it('calls the callback with resolved promise', function (done) {
       var data = {foo: 'bar'};
       var promise = Promise.resolve(data);
-      var dummy = this.sandbox.stub().returns(promise);
+      var dummy = jest.fn().mockReturnValue(promise);
       var fn = wrapPromise(dummy);
 
       fn({}, function (err, resolvedData) {
-        expect(err).to.not.exist;
-        expect(resolvedData).to.equal(data);
+        expect(err).toBeFalsy();
+        expect(resolvedData).toBe(data);
 
         done();
       });
@@ -99,12 +98,12 @@ describe('wrapPromise', function () {
     it('calls the callback with rejected promise', function (done) {
       var error = new Error('An Error');
       var promise = Promise.reject(error);
-      var dummy = this.sandbox.stub().returns(promise);
+      var dummy = jest.fn().mockReturnValue(promise);
       var fn = wrapPromise(dummy);
 
       fn({}, function (err, resolvedData) {
-        expect(resolvedData).to.not.exist;
-        expect(err).to.equal(error);
+        expect(resolvedData).toBeFalsy();
+        expect(err).toBe(error);
 
         done();
       });
@@ -112,12 +111,14 @@ describe('wrapPromise', function () {
   });
 
   describe('wrapPrototype', function () {
+    let MyObject;
+
     beforeEach(function () {
-      function MyObject(value) {
+      function CustomObject(value) {
         this.value = value;
       }
 
-      MyObject.prototype.myAsyncMethod = function (succeed) {
+      CustomObject.prototype.myAsyncMethod = function (succeed) {
         if (succeed) {
           return Promise.resolve('yay');
         }
@@ -125,7 +126,7 @@ describe('wrapPromise', function () {
         return Promise.reject('boo');
       };
 
-      MyObject.prototype.mySecondAsyncMethod = function (succeed) {
+      CustomObject.prototype.mySecondAsyncMethod = function (succeed) {
         if (succeed) {
           return Promise.resolve('yay');
         }
@@ -133,11 +134,11 @@ describe('wrapPromise', function () {
         return Promise.reject('boo');
       };
 
-      MyObject.prototype.myAsyncMethodWithContext = function () {
+      CustomObject.prototype.myAsyncMethodWithContext = function () {
         return Promise.resolve(this.value);
       };
 
-      MyObject.myStaticMethod = function (succeed) {
+      CustomObject.myStaticMethod = function (succeed) {
         if (succeed) {
           return Promise.resolve('yay');
         }
@@ -145,7 +146,7 @@ describe('wrapPromise', function () {
         return Promise.reject('boo');
       };
 
-      MyObject.prototype.mySyncMethod = function (succeed) {
+      CustomObject.prototype.mySyncMethod = function (succeed) {
         if (succeed) {
           return 'yay';
         }
@@ -153,46 +154,46 @@ describe('wrapPromise', function () {
         return 'boo';
       };
 
-      MyObject.prototype._myPrivateMethod = function () {
+      CustomObject.prototype._myPrivateMethod = function () {
         return Promise.resolve('yay');
       };
 
-      MyObject.prototype.propertyOnPrototype = 'Not a function';
+      CustomObject.prototype.propertyOnPrototype = 'Not a function';
 
-      this.MyObject = wrapPromise.wrapPrototype(MyObject);
+      MyObject = wrapPromise.wrapPrototype(CustomObject);
     });
 
     it('ignores static methods', function () {
-      var returnValue = this.MyObject.myStaticMethod(true, function () {});
+      var returnValue = MyObject.myStaticMethod(true, function () {});
 
       // if it had converted it, the return
       // value would be undefined
-      expect(returnValue).to.be.an.instanceof(Promise);
+      expect(returnValue).toBeInstanceOf(Promise);
     });
 
     it('ignores sync methods', function () {
-      var obj = new this.MyObject();
+      var obj = new MyObject();
       var returnValue = obj.mySyncMethod(true);
 
-      expect(returnValue).to.equal('yay');
+      expect(returnValue).toBe('yay');
     });
 
     it('ignores non-methods on the prototype', function () {
-      var obj = new this.MyObject();
+      var obj = new MyObject();
 
-      expect(obj.propertyOnPrototype).to.equal('Not a function');
+      expect(obj.propertyOnPrototype).toBe('Not a function');
     });
 
     it('ignores private methods', function () {
-      var obj = new this.MyObject();
+      var obj = new MyObject();
 
-      expect(obj._myPrivateMethod(noop)).to.be.an.instanceof(Promise);
+      expect(obj._myPrivateMethod(noop)).toBeInstanceOf(Promise);
     });
 
     it('ignores the constructor', function () {
-      var obj = new this.MyObject();
+      var obj = new MyObject();
 
-      expect(obj.constructor.toString()).to.match(/^function MyObject\(/);
+      expect(obj.constructor.toString()).toMatch(/^function CustomObject\(/);
     });
 
     it('can pass in an options object to ignore methods', function () {
@@ -209,7 +210,6 @@ describe('wrapPromise', function () {
         return 'not a promise';
       };
       MyOtherObject.prototype.alsoIgnoreMe = function (cb) {
-        typeof cb;
         cb();
 
         return 'also not a promise';
@@ -221,13 +221,13 @@ describe('wrapPromise', function () {
 
       obj = new MyOtherObject();
 
-      expect(obj.transformMe(noop)).to.be.undefined;
+      expect(obj.transformMe(noop)).toBeUndefined();
       expect(function () {
         obj.ignoreMe(noop);
-      }).to.not.throw();
+      }).not.toThrowError();
       expect(function () {
         obj.alsoIgnoreMe(noop);
-      }).to.not.throw();
+      }).not.toThrowError();
     });
 
     it('can pass in an options object to include methods with leading underscores', function (done) {
@@ -246,53 +246,53 @@ describe('wrapPromise', function () {
       obj = new MyOtherObject();
 
       obj._doNotIgnoreMe(function (err, res) {
-        expect(res).to.equal('yay');
+        expect(res).toBe('yay');
         done();
       });
     });
 
     describe('wraps each method on the prototype to use callbacks', function () {
       it('happy path', function (done) {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = 'not undefined';
 
         returnValue = obj.myAsyncMethod(true, function (err, res) {
-          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
-          expect(err).to.not.exist;
-          expect(res).to.equal('yay');
+          expect(returnValue).toBeUndefined(); // eslint-disable-line no-undefined
+          expect(err).toBeFalsy();
+          expect(res).toBe('yay');
           done();
         });
       });
 
       it('sad path', function (done) {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = 'not undefined';
 
         returnValue = obj.myAsyncMethod(false, function (err, res) {
-          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
-          expect(res).to.not.exist;
-          expect(err).to.equal('boo');
+          expect(returnValue).toBeUndefined(); // eslint-disable-line no-undefined
+          expect(res).toBeFalsy();
+          expect(err).toBe('boo');
           done();
         });
       });
 
       it('works on all protoypical methods', function (done) {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = 'not undefined';
 
         returnValue = obj.mySecondAsyncMethod(true, function (err, res) {
-          expect(returnValue).to.equal(undefined); // eslint-disable-line no-undefined
-          expect(err).to.not.exist;
-          expect(res).to.equal('yay');
+          expect(returnValue).toBeUndefined(); // eslint-disable-line no-undefined
+          expect(err).toBeFalsy();
+          expect(res).toBe('yay');
           done();
         });
       });
 
       it('respects `this`', function (done) {
-        var obj = new this.MyObject('foo');
+        var obj = new MyObject('foo');
 
         obj.myAsyncMethodWithContext(function (err, res) {
-          expect(res).to.equal('foo');
+          expect(res).toBe('foo');
           done();
         });
       });
@@ -300,45 +300,45 @@ describe('wrapPromise', function () {
 
     describe('wraps each method on the prototype to and maintains promise behavior', function () {
       it('happy path', function () {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = obj.myAsyncMethod(true);
 
-        expect(returnValue).to.be.an.instanceof(Promise);
+        expect(returnValue).toBeInstanceOf(Promise);
 
         return returnValue.then(function (res) {
-          expect(res).to.equal('yay');
+          expect(res).toBe('yay');
         });
       });
 
       it('sad path', function () {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = obj.myAsyncMethod(false);
 
-        expect(returnValue).to.be.an.instanceof(Promise);
+        expect(returnValue).toBeInstanceOf(Promise);
 
         return returnValue.then(function () {
           throw new Error('should not get here');
         }).catch(function (err) {
-          expect(err).to.equal('boo');
+          expect(err).toBe('boo');
         });
       });
 
       it('works on all protoypical methods', function () {
-        var obj = new this.MyObject();
+        var obj = new MyObject();
         var returnValue = obj.mySecondAsyncMethod(true);
 
-        expect(returnValue).to.be.an.instanceof(Promise);
+        expect(returnValue).toBeInstanceOf(Promise);
 
         return returnValue.then(function (res) {
-          expect(res).to.equal('yay');
+          expect(res).toBe('yay');
         });
       });
 
       it('respects `this`', function () {
-        var obj = new this.MyObject('foo');
+        var obj = new MyObject('foo');
 
         return obj.myAsyncMethodWithContext().then(function (res) {
-          expect(res).to.equal('foo');
+          expect(res).toBe('foo');
         });
       });
     });

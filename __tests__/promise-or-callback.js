@@ -1,5 +1,3 @@
-'use strict';
-
 var promiseOrCallback = require('../lib/promise-or-callback');
 
 function noop() {}
@@ -21,14 +19,14 @@ describe('promiseOrCallback', function () {
     var promise = functionThatReturnsAResolvedPromise();
     var isPromise = promiseOrCallback(promise);
 
-    expect(isPromise).to.be.an.instanceof(Promise);
+    expect(isPromise).toBeInstanceOf(Promise);
   });
 
   it('does not return a promise if a callback is provided', function () {
     var promise = functionThatReturnsAResolvedPromise();
     var isPromise = promiseOrCallback(promise, noop);
 
-    expect(isPromise).to.not.be.an.instanceof(Promise);
+    expect(isPromise).not.toBeInstanceOf(Promise);
   });
 
   it('calls callback with error caught from promise', function (done) {
@@ -36,7 +34,7 @@ describe('promiseOrCallback', function () {
     var promise = functionThatReturnsARejectedPromise(error);
 
     promiseOrCallback(promise, function (err) {
-      expect(err).to.equal(error);
+      expect(err).toBe(error);
 
       done();
     });
@@ -47,8 +45,8 @@ describe('promiseOrCallback', function () {
     var promise = functionThatReturnsAResolvedPromise(data);
 
     promiseOrCallback(promise, function (err, resolvedData) {
-      expect(err).to.not.exist;
-      expect(resolvedData).to.equal(data);
+      expect(err).toBeFalsy();
+      expect(resolvedData).toBe(data);
 
       done();
     });

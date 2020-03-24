@@ -1,28 +1,26 @@
-'use strict';
-
 var once = require('../lib/once');
 
 describe('once', function () {
   it('only calls function once', function () {
     var funcOnlyCalledOnce;
-    var spy = this.sandbox.spy();
+    var spy = jest.fn();
 
     function func() {
       spy();
     }
     funcOnlyCalledOnce = once(func);
 
-    expect(spy).to.not.be.called;
+    expect(spy).not.toBeCalled();
 
     funcOnlyCalledOnce();
 
-    expect(spy).to.be.calledOnce;
+    expect(spy).toBeCalledTimes(1);
 
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
 
-    expect(spy).to.be.calledOnce;
+    expect(spy).toBeCalledTimes(1);
   });
 });
