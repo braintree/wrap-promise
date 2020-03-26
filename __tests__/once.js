@@ -1,9 +1,9 @@
-var once = require('../lib/once');
+const once = require('../lib/once');
 
-describe('once', function () {
-  it('only calls function once', function () {
-    var funcOnlyCalledOnce;
-    var spy = jest.fn();
+describe('once', () => {
+  it('only calls function once', () => {
+    let funcOnlyCalledOnce;
+    const spy = jest.fn();
 
     function func() {
       spy();

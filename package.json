@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/braintree/wrap-promise/issues"
   },
-  "homepage": "https://github.com/braintree/wrap-promise#readme"
+  "homepage": "https://github.com/braintree/wrap-promise#readme",
+  "jest": {
+    "testPathIgnorePatterns": ["__tests__/helpers.js"]
+  }
 }

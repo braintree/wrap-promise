@@ -1,9 +1,9 @@
 const deferred = require('../lib/deferred');
 
 describe('deferred', () => {
-  test('delays the call to the function', done => {
-    const fn = jest.fn().mockImplementation(function () {
-      expect(arguments.length).toBe(0);
+  it('delays the call to the function', done => {
+    const fn = jest.fn((...rest) => {
+      expect(rest).toHaveLength(0);
 
       done();
     });
@@ -14,9 +14,9 @@ describe('deferred', () => {
     expect(fn).not.toBeCalled();
   });
 
-  test('can pass arguments to the deferred function', done => {
-    const fn = jest.fn().mockImplementation(function (a, b) {
-      expect(arguments.length).toBe(2);
+  it('can pass arguments to the deferred function', done => {
+    const fn = jest.fn((a, b, ...rest) => {
+      expect(rest).toHaveLength(0);
       expect(a).toBe(1);
       expect(b).toBe(2);
 
@@ -29,16 +29,15 @@ describe('deferred', () => {
     expect(fn).not.toBeCalled();
   });
 
-  test('sends message to console if function throws an error', done => {
+  it('sends message to console if function throws an error', done => {
     let def;
-    const error = new Error('simulated error, disregard in test output');
+    const error = new Error('simulated error');
 
     function funcThatThrows() {
       throw error;
     }
     def = deferred(funcThatThrows);
-
-    jest.spyOn(console, 'log');
+    console.log = jest.fn();
 
     def();
 

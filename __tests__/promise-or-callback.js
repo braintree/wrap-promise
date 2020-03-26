@@ -1,50 +1,49 @@
-var promiseOrCallback = require('../lib/promise-or-callback');
-
-function noop() {}
+const promiseOrCallback = require('../lib/promise-or-callback');
+const { noop } = require('./helpers');
 
 function functionThatReturnsAResolvedPromise(data) {
-  return new Promise(function (resolve) {
+  return new Promise(resolve => {
     resolve(data);
   });
 }
 
 function functionThatReturnsARejectedPromise(err) {
-  return new Promise(function () {
+  return new Promise(() => {
     throw err;
   });
 }
 
-describe('promiseOrCallback', function () {
-  it('returns promise if no callback is provided', function () {
-    var promise = functionThatReturnsAResolvedPromise();
-    var isPromise = promiseOrCallback(promise);
+describe('promiseOrCallback', () => {
+  it('returns promise if no callback is provided', () => {
+    const promise = functionThatReturnsAResolvedPromise();
+    const isPromise = promiseOrCallback(promise);
 
     expect(isPromise).toBeInstanceOf(Promise);
   });
 
-  it('does not return a promise if a callback is provided', function () {
-    var promise = functionThatReturnsAResolvedPromise();
-    var isPromise = promiseOrCallback(promise, noop);
+  it('does not return a promise if a callback is provided', () => {
+    const promise = functionThatReturnsAResolvedPromise();
+    const isPromise = promiseOrCallback(promise, noop);
 
     expect(isPromise).not.toBeInstanceOf(Promise);
   });
 
-  it('calls callback with error caught from promise', function (done) {
-    var error = new Error('a problem');
-    var promise = functionThatReturnsARejectedPromise(error);
+  it('calls callback with error caught from promise', done => {
+    const error = new Error('a problem');
+    const promise = functionThatReturnsARejectedPromise(error);
 
-    promiseOrCallback(promise, function (err) {
+    promiseOrCallback(promise, err => {
       expect(err).toBe(error);
 
       done();
     });
   });
 
-  it('calls callback with data resolved from promise', function (done) {
-    var data = {foo: 'bar'};
-    var promise = functionThatReturnsAResolvedPromise(data);
+  it('calls callback with data resolved from promise', done => {
+    const data = {foo: 'bar'};
+    const promise = functionThatReturnsAResolvedPromise(data);
 
-    promiseOrCallback(promise, function (err, resolvedData) {
+    promiseOrCallback(promise, (err, resolvedData) => {
       expect(err).toBeFalsy();
       expect(resolvedData).toBe(data);
 
