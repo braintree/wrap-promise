@@ -2,7 +2,7 @@
   "name": "@braintree/wrap-promise",
   "version": "2.0.0",
   "description": "A small lib to return promises or use callbacks",
-  "main": "wrap-promise.js",
+  "main": "dist/wrap-promise.js",
   "files": [
     "dist"
   ],
@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/jest": "^25.1.4",
     "eslint": "^6.8.0",
-    "eslint-config-braintree": "5.0.0-typescript-prep-rc.10",
+    "eslint-config-braintree": "5.0.0-typescript-prep-rc.11",
     "jest": "^25.2.4",
     "ts-jest": "^25.3.0",
     "typescript": "^3.8.3"

@@ -1,12 +1,12 @@
 'use strict';
 
-export = function once(fn) {
+export = function once(fn: Function) {
   var called = false;
 
-  return function () {
+  return function (...args) {
     if (!called) {
       called = true;
-      fn.apply(null, arguments);
+      fn(...args);
     }
   };
 }

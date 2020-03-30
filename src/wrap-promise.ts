@@ -4,11 +4,15 @@ import deferred = require('./lib/deferred');
 import once = require('./lib/once');
 import promiseOrCallback = require('./lib/promise-or-callback');
 
-function wrapPromise(fn) {
-  return function (...rawArguments: any[]) {
-    var callback;
-    var args = Array.prototype.slice.call(rawArguments);
-    var lastArg = args[args.length - 1];
+interface WrapPrototypeOptions {
+  ignoreMethods? : string[],
+  transformPrivateMethods? : Boolean
+}
+
+function wrapPromise(fn: Function) {
+  return function (...args: any[]) {
+    let callback;
+    const lastArg = args[args.length - 1];
 
     if (typeof lastArg === 'function') {
       callback = args.pop();
@@ -19,18 +23,17 @@ function wrapPromise(fn) {
   };
 }
 
-wrapPromise.wrapPrototype = function (target, options?) {
-  var methods, ignoreMethods, includePrivateMethods;
-
-  options = options || {};
-  ignoreMethods = options.ignoreMethods || [];
-  includePrivateMethods = options.transformPrivateMethods === true;
-
-  methods = Object.getOwnPropertyNames(target.prototype).filter(function (method) {
-    var isNotPrivateMethod;
-    var isNonConstructorFunction = method !== 'constructor' &&
+wrapPromise.wrapPrototype = function (
+  target,
+  options: WrapPrototypeOptions = {}
+) {
+  const ignoreMethods = options.ignoreMethods || [];
+  const includePrivateMethods = options.transformPrivateMethods === true;
+  const methods = Object.getOwnPropertyNames(target.prototype).filter(method => {
+    let isNotPrivateMethod;
+    const isNonConstructorFunction = method !== 'constructor' &&
       typeof target.prototype[method] === 'function';
-    var isNotAnIgnoredMethod = ignoreMethods.indexOf(method) === -1;
+    const isNotAnIgnoredMethod = ignoreMethods.indexOf(method) === -1;
 
     if (includePrivateMethods) {
       isNotPrivateMethod = true;
@@ -43,8 +46,8 @@ wrapPromise.wrapPrototype = function (target, options?) {
       isNotAnIgnoredMethod;
   });
 
-  methods.forEach(function (method) {
-    var original = target.prototype[method];
+  methods.forEach(method => {
+    const original = target.prototype[method];
 
     target.prototype[method] = wrapPromise(original);
   });

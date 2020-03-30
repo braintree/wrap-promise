@@ -1,6 +1,6 @@
 'use strict';
 
-export = function deferred(fn) {
+export = function deferred(fn: Function) {
   return function (...args: any[]) {
     setTimeout(function () {
       try {
