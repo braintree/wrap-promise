@@ -1,5 +1,5 @@
 const wrapPromise = require('../wrap-promise');
-const {noop} = require('./helpers');
+const { noop } = require('./helpers');
 
 describe('wrapPromise', () => {
   let testContext;
@@ -16,7 +16,7 @@ describe('wrapPromise', () => {
 
   describe('functions without callbacks', () => {
     it('invokes first parameter', () => {
-      const returnValue = {foo: 'bar'};
+      const returnValue = { foo: 'bar' };
       let fn;
 
       fn = wrapPromise(() => returnValue);
@@ -82,7 +82,7 @@ describe('wrapPromise', () => {
     });
 
     it('calls the callback with resolved promise', done => {
-      const data = {foo: 'bar'};
+      const data = { foo: 'bar' };
       const promise = Promise.resolve(data);
       const fn = wrapPromise(jest.fn(() => promise));
 
