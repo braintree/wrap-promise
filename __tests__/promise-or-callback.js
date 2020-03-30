@@ -1,5 +1,5 @@
 const promiseOrCallback = require('../lib/promise-or-callback');
-const { noop } = require('./helpers');
+const {noop} = require('./helpers');
 
 function functionThatReturnsAResolvedPromise(data) {
   return new Promise(resolve => {
