@@ -30,6 +30,8 @@
   },
   "homepage": "https://github.com/braintree/wrap-promise#readme",
   "jest": {
-    "testPathIgnorePatterns": ["__tests__/helpers.js"]
+    "testPathIgnorePatterns": [
+      "__tests__/helpers.js"
+    ]
   }
 }
