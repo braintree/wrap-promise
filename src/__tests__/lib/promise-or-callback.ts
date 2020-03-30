@@ -1,13 +1,15 @@
-const promiseOrCallback = require('../lib/promise-or-callback');
-const { noop } = require('./helpers');
+import promiseOrCallback = require('../../lib/promise-or-callback');
+import helpers = require('../helpers');
 
-function functionThatReturnsAResolvedPromise(data) {
+const noop = helpers.noop;
+
+function functionThatReturnsAResolvedPromise(data?: any) {
   return new Promise(resolve => {
     resolve(data);
   });
 }
 
-function functionThatReturnsARejectedPromise(err) {
+function functionThatReturnsARejectedPromise(err: Error) {
   return new Promise(() => {
     throw err;
   });

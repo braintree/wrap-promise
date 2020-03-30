@@ -1,6 +1,6 @@
 'use strict';
 
-function once(fn) {
+export = function once(fn) {
   var called = false;
 
   return function () {
@@ -10,5 +10,3 @@ function once(fn) {
     }
   };
 }
-
-module.exports = once;

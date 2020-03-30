@@ -1,6 +1,6 @@
 'use strict';
 
-function promiseOrCallback(promise, callback) { // eslint-disable-line consistent-return
+export = function promiseOrCallback(promise, callback?: Function) { // eslint-disable-line consistent-return
   if (callback) {
     promise
       .then(function (data) {
@@ -13,5 +13,3 @@ function promiseOrCallback(promise, callback) { // eslint-disable-line consisten
     return promise;
   }
 }
-
-module.exports = promiseOrCallback;

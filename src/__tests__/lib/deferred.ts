@@ -1,4 +1,4 @@
-const deferred = require('../lib/deferred');
+import deferred = require('../../lib/deferred');
 
 describe('deferred', () => {
   it('delays the call to the function', done => {

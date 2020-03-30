@@ -1,5 +1,7 @@
-const wrapPromise = require('../wrap-promise');
-const { noop } = require('./helpers');
+import wrapPromise = require('../wrap-promise');
+import helpers = require('./helpers');
+
+const noop = helpers.noop;
 
 describe('wrapPromise', () => {
   let testContext;

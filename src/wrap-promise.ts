@@ -1,13 +1,13 @@
 'use strict';
 
-var deferred = require('./lib/deferred');
-var once = require('./lib/once');
-var promiseOrCallback = require('./lib/promise-or-callback');
+import deferred = require('./lib/deferred');
+import once = require('./lib/once');
+import promiseOrCallback = require('./lib/promise-or-callback');
 
 function wrapPromise(fn) {
-  return function () {
+  return function (...rawArguments: any[]) {
     var callback;
-    var args = Array.prototype.slice.call(arguments);
+    var args = Array.prototype.slice.call(rawArguments);
     var lastArg = args[args.length - 1];
 
     if (typeof lastArg === 'function') {
@@ -19,7 +19,7 @@ function wrapPromise(fn) {
   };
 }
 
-wrapPromise.wrapPrototype = function (target, options) {
+wrapPromise.wrapPrototype = function (target, options?) {
   var methods, ignoreMethods, includePrivateMethods;
 
   options = options || {};
@@ -52,4 +52,4 @@ wrapPromise.wrapPrototype = function (target, options) {
   return target;
 };
 
-module.exports = wrapPromise;
+export = wrapPromise;

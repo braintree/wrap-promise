@@ -1,10 +1,7 @@
 'use strict';
 
-function deferred(fn) {
-  return function () {
-    // IE9 doesn't support passing arguments to setTimeout so we have to emulate it.
-    var args = arguments;
-
+export = function deferred(fn) {
+  return function (...args: any[]) {
     setTimeout(function () {
       try {
         fn.apply(null, args);
@@ -17,5 +14,3 @@ function deferred(fn) {
     }, 1);
   };
 }
-
-module.exports = deferred;
