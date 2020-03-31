@@ -1,9 +1,7 @@
-'use strict';
+export = function once(fn: Function): Function {
+  let called = false;
 
-export = function once(fn: Function) {
-  var called = false;
-
-  return function (...args) {
+  return function (...args): void {
     if (!called) {
       called = true;
       fn(...args);

@@ -19,7 +19,7 @@
   "scripts": {
     "prebuild": "prettier --write .",
     "build": "tsc",
-    "lint": "eslint .",
+    "lint": "eslint --ext .js,.ts .",
     "posttest": "npm run lint",
     "prepare": "npm run build",
     "test": "jest"

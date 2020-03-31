@@ -30,13 +30,12 @@ describe('deferred', () => {
   });
 
   it('sends message to console if function throws an error', done => {
-    let def;
     const error = new Error('simulated error');
 
-    function funcThatThrows() {
+    function funcThatThrows(): void {
       throw error;
     }
-    def = deferred(funcThatThrows);
+    const def = deferred(funcThatThrows);
     console.log = jest.fn();
 
     def();

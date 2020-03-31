@@ -2,13 +2,12 @@ import once = require('../../lib/once');
 
 describe('once', () => {
   it('only calls function once', () => {
-    let funcOnlyCalledOnce;
     const spy = jest.fn();
 
-    function func() {
+    function func(): void {
       spy();
     }
-    funcOnlyCalledOnce = once(func);
+    const funcOnlyCalledOnce = once(func);
 
     expect(spy).not.toBeCalled();
 

@@ -1,10 +1,8 @@
-'use strict';
-
-export = function deferred(fn: Function) {
-  return function (...args: any[]) {
+export = function deferred(fn: Function): Function {
+  return function (...args: any[]): void {
     setTimeout(function () {
       try {
-        fn.apply(null, args);
+        fn(...args);
       } catch (err) {
         /* eslint-disable no-console */
         console.log('Error in callback function');

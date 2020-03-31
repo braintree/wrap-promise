@@ -3,13 +3,13 @@ import helpers = require('../helpers');
 
 const noop = helpers.noop;
 
-function functionThatReturnsAResolvedPromise(data?: any) {
+function functionThatReturnsAResolvedPromise(data?: any): Promise<any> {
   return new Promise(resolve => {
     resolve(data);
   });
 }
 
-function functionThatReturnsARejectedPromise(err: Error) {
+function functionThatReturnsARejectedPromise(err: Error): Promise<void> {
   return new Promise(() => {
     throw err;
   });

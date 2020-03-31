@@ -1,10 +1,8 @@
-'use strict';
-
+/* eslint-disable consistent-return */
 export = function promiseOrCallback(
-  promise: Promise<any>,
+  promise,
   callback?: Function
-) {
-  // eslint-disable-line consistent-return
+): Function | Promise<any> {
   if (!callback) {
     return promise;
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import wrapPromise = require('../wrap-promise');
 import helpers = require('./helpers');
 
@@ -19,32 +20,28 @@ describe('wrapPromise', () => {
   describe('functions without callbacks', () => {
     it('invokes first parameter', () => {
       const returnValue = { foo: 'bar' };
-      let fn;
-
-      fn = wrapPromise(() => returnValue);
+      const fn = wrapPromise(() => returnValue);
 
       expect(fn()).toBe(returnValue);
     });
 
     it('passes argument to first parameter', done => {
-      let fn;
       const options = {
         foo: 'bar'
       };
 
-      function dummy(data) {
+      function dummy(data): void {
         expect(data).toBe(options);
 
         done();
       }
 
-      fn = wrapPromise(dummy);
+      const fn = wrapPromise(dummy);
 
       fn(options);
     });
 
     it('passes along many arguments to first parameter', done => {
-      let fn;
       const firstArg = {
         foo: 'bar'
       };
@@ -55,7 +52,7 @@ describe('wrapPromise', () => {
         baz: 'buz'
       };
 
-      function dummy(one, two, three) {
+      function dummy(one, two, three): void {
         expect(one).toBe(firstArg);
         expect(two).toBe(secondArg);
         expect(three).toBe(thirdArg);
@@ -63,7 +60,7 @@ describe('wrapPromise', () => {
         done();
       }
 
-      fn = wrapPromise(dummy);
+      const fn = wrapPromise(dummy);
 
       fn(firstArg, secondArg, thirdArg);
     });
@@ -114,48 +111,54 @@ describe('wrapPromise', () => {
     let MyObject;
 
     beforeEach(() => {
-      function CustomObject(value) {
-        testContext.value = value;
+      class CustomObject {
+        constructor(value) {
+          testContext.value = value;
+
+          // @ts-ignore
+          this.propertyOnPrototype = 'Not a function';
+        }
+
+        myAsyncMethod(succeed): Promise<string> {
+          if (succeed) {
+            return Promise.resolve('yay');
+          }
+
+          return Promise.reject('boo');
+        }
+
+        mySecondAsyncMethod(succeed): Promise<string> {
+          if (succeed) {
+            return Promise.resolve('yay');
+          }
+
+          return Promise.reject('boo');
+        }
+
+        myAsyncMethodWithContext(): Promise<string> {
+          return Promise.resolve(testContext.value);
+        }
+
+        static myStaticMethod(succeed): Promise<string> {
+          if (succeed) {
+            return Promise.resolve('yay');
+          }
+
+          return Promise.reject('boo');
+        }
+
+        mySyncMethod(succeed): string {
+          if (succeed) {
+            return 'yay';
+          }
+
+          return 'boo';
+        }
+
+        _myPrivateMethod(): Promise<string> {
+          return Promise.resolve('yay');
+        }
       }
-
-      CustomObject.prototype.myAsyncMethod = succeed => {
-        if (succeed) {
-          return Promise.resolve('yay');
-        }
-
-        return Promise.reject('boo');
-      };
-
-      CustomObject.prototype.mySecondAsyncMethod = succeed => {
-        if (succeed) {
-          return Promise.resolve('yay');
-        }
-
-        return Promise.reject('boo');
-      };
-
-      CustomObject.prototype.myAsyncMethodWithContext = () =>
-        Promise.resolve(testContext.value);
-
-      CustomObject.myStaticMethod = succeed => {
-        if (succeed) {
-          return Promise.resolve('yay');
-        }
-
-        return Promise.reject('boo');
-      };
-
-      CustomObject.prototype.mySyncMethod = succeed => {
-        if (succeed) {
-          return 'yay';
-        }
-
-        return 'boo';
-      };
-
-      CustomObject.prototype._myPrivateMethod = () => Promise.resolve('yay');
-
-      CustomObject.prototype.propertyOnPrototype = 'Not a function';
 
       MyObject = wrapPromise.wrapPrototype(CustomObject);
     });
@@ -194,28 +197,29 @@ describe('wrapPromise', () => {
     });
 
     it('can pass in an options object to ignore methods', () => {
-      let obj;
+      class MyOtherObject {
+        transformMe(): Promise<string> {
+          return Promise.resolve('yay');
+        }
+        ignoreMe(cb): string {
+          cb();
 
-      function MyOtherObject() {}
+          return 'not a promise';
+        }
+        alsoIgnoreMe(cb): string {
+          cb();
 
-      MyOtherObject.prototype.transformMe = () => Promise.resolve('yay');
-      MyOtherObject.prototype.ignoreMe = cb => {
-        cb();
-
-        return 'not a promise';
-      };
-      MyOtherObject.prototype.alsoIgnoreMe = cb => {
-        cb();
-
-        return 'also not a promise';
-      };
+          return 'also not a promise';
+        }
+      }
 
       wrapPromise.wrapPrototype(MyOtherObject, {
         ignoreMethods: ['ignoreMe', 'alsoIgnoreMe']
       });
 
-      obj = new MyOtherObject();
+      const obj = new MyOtherObject();
 
+      // @ts-ignore
       expect(obj.transformMe(noop)).toBeUndefined();
       expect(() => {
         obj.ignoreMe(noop);
@@ -226,18 +230,19 @@ describe('wrapPromise', () => {
     });
 
     it('can pass in an options object to include methods with leading underscores', done => {
-      let obj;
-
-      function MyOtherObject() {}
-
-      MyOtherObject.prototype._doNotIgnoreMe = () => Promise.resolve('yay');
+      class MyOtherObject {
+        _doNotIgnoreMe(): Promise<string> {
+          return Promise.resolve('yay');
+        }
+      }
 
       wrapPromise.wrapPrototype(MyOtherObject, {
         transformPrivateMethods: true
       });
 
-      obj = new MyOtherObject();
+      const obj = new MyOtherObject();
 
+      // @ts-ignore
       obj._doNotIgnoreMe((err, res) => {
         expect(res).toBe('yay');
         done();

@@ -1,16 +1,14 @@
-'use strict';
-
 import deferred = require('./lib/deferred');
 import once = require('./lib/once');
 import promiseOrCallback = require('./lib/promise-or-callback');
 
 interface WrapPrototypeOptions {
   ignoreMethods?: string[];
-  transformPrivateMethods?: Boolean;
+  transformPrivateMethods?: boolean;
 }
 
-function wrapPromise(fn: Function) {
-  return function (...args: any[]) {
+function wrapPromise(fn: Function): Function {
+  return function (...args): Function | Promise<any> {
     let callback;
     const lastArg = args[args.length - 1];
 
@@ -26,7 +24,7 @@ function wrapPromise(fn: Function) {
 wrapPromise.wrapPrototype = function (
   target,
   options: WrapPrototypeOptions = {}
-) {
+): void {
   const ignoreMethods = options.ignoreMethods || [];
   const includePrivateMethods = options.transformPrivateMethods === true;
   const methods = Object.getOwnPropertyNames(target.prototype).filter(
