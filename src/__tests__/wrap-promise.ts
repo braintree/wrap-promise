@@ -134,7 +134,8 @@ describe('wrapPromise', () => {
         return Promise.reject('boo');
       };
 
-      CustomObject.prototype.myAsyncMethodWithContext = () => Promise.resolve(testContext.value);
+      CustomObject.prototype.myAsyncMethodWithContext = () =>
+        Promise.resolve(testContext.value);
 
       CustomObject.myStaticMethod = succeed => {
         if (succeed) {
@@ -308,11 +309,13 @@ describe('wrapPromise', () => {
 
         expect(returnValue).toBeInstanceOf(Promise);
 
-        return returnValue.then(() => {
-          throw new Error('should not get here');
-        }).catch(err => {
-          expect(err).toBe('boo');
-        });
+        return returnValue
+          .then(() => {
+            throw new Error('should not get here');
+          })
+          .catch(err => {
+            expect(err).toBe('boo');
+          });
       });
 
       it('works on all protoypical methods', () => {

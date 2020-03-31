@@ -9,4 +9,4 @@ export = function once(fn: Function) {
       fn(...args);
     }
   };
-}
+};

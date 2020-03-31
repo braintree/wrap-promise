@@ -13,4 +13,4 @@ export = function deferred(fn: Function) {
       }
     }, 1);
   };
-}
+};
