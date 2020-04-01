@@ -1,4 +1,4 @@
-import deferred = require('../../lib/deferred');
+import deferred from '../../lib/deferred';
 
 describe('deferred', () => {
   it('delays the call to the function', done => {

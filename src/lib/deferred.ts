@@ -1,4 +1,4 @@
-export = function deferred(fn: Function): Function {
+export default function deferred(fn: Function): Function {
   return function (...args: any[]): void {
     setTimeout(function () {
       try {
@@ -11,4 +11,4 @@ export = function deferred(fn: Function): Function {
       }
     }, 1);
   };
-};
+}

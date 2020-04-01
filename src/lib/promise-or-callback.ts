@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-export = function promiseOrCallback(
+export default function promiseOrCallback(
   promise,
   callback?: Function
 ): Function | Promise<any> {
@@ -8,4 +8,4 @@ export = function promiseOrCallback(
   }
 
   promise.then(data => callback(null, data)).catch(err => callback(err));
-};
+}

@@ -1,4 +1,4 @@
-export = function once(fn: Function): Function {
+export default function once(fn: Function): Function {
   let called = false;
 
   return function (...args): void {
@@ -7,4 +7,4 @@ export = function once(fn: Function): Function {
       fn(...args);
     }
   };
-};
+}

@@ -1,6 +1,6 @@
-import deferred = require('./lib/deferred');
-import once = require('./lib/once');
-import promiseOrCallback = require('./lib/promise-or-callback');
+import deferred from './lib/deferred';
+import once from './lib/once';
+import promiseOrCallback from './lib/promise-or-callback';
 
 interface WrapPrototypeOptions {
   ignoreMethods?: string[];

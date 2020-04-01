@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import wrapPromise = require('../wrap-promise');
-import helpers = require('./helpers');
-
-const noop = helpers.noop;
+import { noop } from './helpers';
 
 describe('wrapPromise', () => {
   let testContext;

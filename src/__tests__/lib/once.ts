@@ -1,4 +1,4 @@
-import once = require('../../lib/once');
+import once from '../../lib/once';
 
 describe('once', () => {
   it('only calls function once', () => {
