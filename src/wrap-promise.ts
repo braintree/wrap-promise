@@ -1,6 +1,6 @@
-import deferred from './lib/deferred';
-import once from './lib/once';
-import promiseOrCallback from './lib/promise-or-callback';
+import deferred from "./lib/deferred";
+import once from "./lib/once";
+import promiseOrCallback from "./lib/promise-or-callback";
 
 interface WrapPrototypeOptions {
   ignoreMethods?: string[];
@@ -12,7 +12,7 @@ function wrapPromise(fn: Function): Function {
     let callback;
     const lastArg = args[args.length - 1];
 
-    if (typeof lastArg === 'function') {
+    if (typeof lastArg === "function") {
       callback = args.pop();
       callback = once(deferred(callback));
     }
@@ -28,17 +28,17 @@ wrapPromise.wrapPrototype = function (
   const ignoreMethods = options.ignoreMethods || [];
   const includePrivateMethods = options.transformPrivateMethods === true;
   const methods = Object.getOwnPropertyNames(target.prototype).filter(
-    method => {
+    (method) => {
       let isNotPrivateMethod;
       const isNonConstructorFunction =
-        method !== 'constructor' &&
-        typeof target.prototype[method] === 'function';
+        method !== "constructor" &&
+        typeof target.prototype[method] === "function";
       const isNotAnIgnoredMethod = ignoreMethods.indexOf(method) === -1;
 
       if (includePrivateMethods) {
         isNotPrivateMethod = true;
       } else {
-        isNotPrivateMethod = method.charAt(0) !== '_';
+        isNotPrivateMethod = method.charAt(0) !== "_";
       }
 
       return (
@@ -47,7 +47,7 @@ wrapPromise.wrapPrototype = function (
     }
   );
 
-  methods.forEach(method => {
+  methods.forEach((method) => {
     const original = target.prototype[method];
 
     target.prototype[method] = wrapPromise(original);

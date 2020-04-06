@@ -7,5 +7,5 @@ export default function promiseOrCallback(
     return promise;
   }
 
-  promise.then(data => callback(null, data)).catch(err => callback(err));
+  promise.then((data) => callback(null, data)).catch((err) => callback(err));
 }

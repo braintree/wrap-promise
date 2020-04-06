@@ -1,7 +1,7 @@
-import once from '../../lib/once';
+import once from "../../lib/once";
 
-describe('once', () => {
-  it('only calls function once', () => {
+describe("once", () => {
+  it("only calls function once", () => {
     const spy = jest.fn();
 
     function func(): void {
