@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "A small lib to return promises or use callbacks",
   "main": "dist/wrap-promise.js",
+  "types": "dist/wrap-promise.d.ts",
   "files": [
     "dist"
   ],
@@ -19,7 +20,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "prebuild": "prettier --write .",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "lint": "eslint --ext .js,.ts .",
     "posttest": "npm run lint",
     "test": "jest"
