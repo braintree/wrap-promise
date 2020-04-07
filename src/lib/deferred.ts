@@ -1,4 +1,5 @@
 export default function deferred(fn: Function): Function {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (...args: any[]): void {
     setTimeout(function () {
       try {

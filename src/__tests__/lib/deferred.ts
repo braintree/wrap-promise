@@ -36,7 +36,7 @@ describe("deferred", () => {
       throw error;
     }
     const def = deferred(funcThatThrows);
-    console.log = jest.fn();
+    console.log = jest.fn(); // eslint-disable-line no-console
 
     def();
 

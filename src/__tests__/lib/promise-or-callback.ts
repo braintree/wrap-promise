@@ -1,6 +1,7 @@
 import promiseOrCallback from "../../lib/promise-or-callback";
 import { noop } from "../helpers";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function functionThatReturnsAResolvedPromise(data?: any): Promise<any> {
   return new Promise((resolve) => {
     resolve(data);

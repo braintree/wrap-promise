@@ -2,12 +2,13 @@ import deferred from "./lib/deferred";
 import once from "./lib/once";
 import promiseOrCallback from "./lib/promise-or-callback";
 
-interface WrapPrototypeOptions {
+type WrapPrototypeOptions = {
   ignoreMethods?: string[];
   transformPrivateMethods?: boolean;
-}
+};
 
 function wrapPromise(fn: Function): Function {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (...args): Function | Promise<any> {
     let callback;
     const lastArg = args[args.length - 1];
