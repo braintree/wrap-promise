@@ -8,8 +8,7 @@ type WrapPrototypeOptions = {
 };
 
 function wrapPromise(fn: Function): Function {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (...args): Function | Promise<any> {
+  return function (...args): Function | Promise<unknown> {
     let callback;
     const lastArg = args[args.length - 1];
 

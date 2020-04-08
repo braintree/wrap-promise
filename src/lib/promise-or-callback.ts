@@ -1,9 +1,8 @@
 /* eslint-disable consistent-return */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function promiseOrCallback(
-  promise: Promise<any>,
+  promise: Promise<unknown>,
   callback?: Function
-): Function | Promise<any> {
+): Function | Promise<unknown> {
   if (!callback) {
     return promise;
   }
