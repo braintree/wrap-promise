@@ -16,7 +16,7 @@ type WrapPrototypeOptions = {
 
 function wrapPromise(fn: Function): Function {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (...args: any[]): Function | Promise<unknown> {
+  return function (...args: any[]): ReturnType<typeof promiseOrCallback> {
     let callback;
     const lastArg = args[args.length - 1];
 

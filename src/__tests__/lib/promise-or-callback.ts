@@ -1,7 +1,8 @@
 import promiseOrCallback from "../../lib/promise-or-callback";
 import { noop } from "../helpers";
 
-function functionThatReturnsAResolvedPromise(data?: unknown): Promise<unknown> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function functionThatReturnsAResolvedPromise(data?: any): Promise<any> {
   return new Promise((resolve) => {
     resolve(data);
   });
@@ -32,7 +33,7 @@ describe("promiseOrCallback", () => {
     const error = new Error("a problem");
     const promise = functionThatReturnsARejectedPromise(error);
 
-    promiseOrCallback(promise, (err: Error) => {
+    promiseOrCallback(promise, (err) => {
       expect(err).toBe(error);
 
       done();
@@ -43,14 +44,11 @@ describe("promiseOrCallback", () => {
     const data = { foo: "bar" };
     const promise = functionThatReturnsAResolvedPromise(data);
 
-    promiseOrCallback(
-      promise,
-      (err: Error, resolvedData: Record<string, string>) => {
-        expect(err).toBeFalsy();
-        expect(resolvedData).toBe(data);
+    promiseOrCallback(promise, (err, resolvedData) => {
+      expect(err).toBeFalsy();
+      expect(resolvedData).toBe(data);
 
-        done();
-      }
-    );
+      done();
+    });
   });
 });
