@@ -2,8 +2,15 @@
 import wrapPromise = require("../wrap-promise");
 import { noop } from "./helpers";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface ClassContructor {
+  new (...args: any[]): any;
+  [propName: string]: any;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 describe("wrapPromise", () => {
-  let testContext;
+  let testContext: Record<string, string>;
 
   beforeEach(() => {
     testContext = {};
@@ -28,7 +35,7 @@ describe("wrapPromise", () => {
         foo: "bar",
       };
 
-      function dummy(data): void {
+      function dummy(data: unknown): void {
         expect(data).toBe(options);
 
         done();
@@ -50,7 +57,7 @@ describe("wrapPromise", () => {
         baz: "buz",
       };
 
-      function dummy(one, two, three): void {
+      function dummy(one: unknown, two: unknown, three: unknown): void {
         expect(one).toBe(firstArg);
         expect(two).toBe(secondArg);
         expect(three).toBe(thirdArg);
@@ -83,7 +90,7 @@ describe("wrapPromise", () => {
       const promise = Promise.resolve(data);
       const fn = wrapPromise(jest.fn(() => promise));
 
-      fn({}, (err, resolvedData) => {
+      fn({}, (err: unknown, resolvedData: unknown) => {
         expect(err).toBeFalsy();
         expect(resolvedData).toBe(data);
 
@@ -96,7 +103,7 @@ describe("wrapPromise", () => {
       const promise = Promise.reject(error);
       const fn = wrapPromise(jest.fn(() => promise));
 
-      fn({}, (err, resolvedData) => {
+      fn({}, (err: unknown, resolvedData: unknown) => {
         expect(resolvedData).toBeFalsy();
         expect(err).toBe(error);
 
@@ -106,60 +113,56 @@ describe("wrapPromise", () => {
   });
 
   describe("wrapPrototype", () => {
-    let MyObject;
+    class CustomObject {
+      propertyOnPrototype: string;
 
-    beforeEach(() => {
-      class CustomObject {
-        constructor(value) {
-          testContext.value = value;
+      constructor(value: string) {
+        testContext.value = value;
 
-          // @ts-ignore
-          this.propertyOnPrototype = "Not a function";
-        }
-
-        myAsyncMethod(succeed): Promise<string> {
-          if (succeed) {
-            return Promise.resolve("yay");
-          }
-
-          return Promise.reject("boo");
-        }
-
-        mySecondAsyncMethod(succeed): Promise<string> {
-          if (succeed) {
-            return Promise.resolve("yay");
-          }
-
-          return Promise.reject("boo");
-        }
-
-        myAsyncMethodWithContext(): Promise<string> {
-          return Promise.resolve(testContext.value);
-        }
-
-        static myStaticMethod(succeed): Promise<string> {
-          if (succeed) {
-            return Promise.resolve("yay");
-          }
-
-          return Promise.reject("boo");
-        }
-
-        mySyncMethod(succeed): string {
-          if (succeed) {
-            return "yay";
-          }
-
-          return "boo";
-        }
-
-        _myPrivateMethod(): Promise<string> {
-          return Promise.resolve("yay");
-        }
+        this.propertyOnPrototype = "Not a function";
       }
 
-      MyObject = wrapPromise.wrapPrototype(CustomObject);
-    });
+      myAsyncMethod(succeed: boolean): Promise<string> {
+        if (succeed) {
+          return Promise.resolve("yay");
+        }
+
+        return Promise.reject("boo");
+      }
+
+      mySecondAsyncMethod(succeed: boolean): Promise<string> {
+        if (succeed) {
+          return Promise.resolve("yay");
+        }
+
+        return Promise.reject("boo");
+      }
+
+      myAsyncMethodWithContext(): Promise<string> {
+        return Promise.resolve(testContext.value);
+      }
+
+      static myStaticMethod(succeed: boolean): Promise<string> {
+        if (succeed) {
+          return Promise.resolve("yay");
+        }
+
+        return Promise.reject("boo");
+      }
+
+      mySyncMethod(succeed: boolean): string {
+        if (succeed) {
+          return "yay";
+        }
+
+        return "boo";
+      }
+
+      _myPrivateMethod(): Promise<string> {
+        return Promise.resolve("yay");
+      }
+    }
+    const MyObject = wrapPromise.wrapPrototype(CustomObject);
 
     it("ignores static methods", () => {
       const returnValue = MyObject.myStaticMethod(true, noop);
@@ -217,7 +220,7 @@ describe("wrapPromise", () => {
 
       const obj = new MyOtherObject();
 
-      // @ts-ignore
+      // @ts-ignore: this is what the sdk does. Adds an optional callback argument to a promise api
       expect(obj.transformMe(noop)).toBeUndefined();
       expect(() => {
         obj.ignoreMe(noop);
@@ -240,7 +243,7 @@ describe("wrapPromise", () => {
 
       const obj = new MyOtherObject();
 
-      // @ts-ignore
+      // @ts-ignore: this is what the sdk does. Adds an optional callback argument to a promise api
       obj._doNotIgnoreMe((err, res) => {
         expect(res).toBe("yay");
         done();
@@ -335,7 +338,7 @@ describe("wrapPromise", () => {
       it("respects `this`", () => {
         const obj = new MyObject("foo");
 
-        return obj.myAsyncMethodWithContext().then((res) => {
+        return obj.myAsyncMethodWithContext().then((res: string) => {
           expect(res).toBe("foo");
         });
       });

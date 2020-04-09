@@ -1,5 +1,5 @@
-export default function deferred(fn: Function): Function {
-  return function (...args: unknown[]): void {
+export default function deferred(fn: (...args: unknown[]) => void) {
+  return function (...args: Parameters<typeof fn>): void {
     setTimeout(function () {
       try {
         fn(...args);
