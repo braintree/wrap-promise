@@ -2,7 +2,7 @@
 export default function promiseOrCallback(
   promise: Promise<unknown>,
   callback?: Function
-): Function | Promise<unknown> {
+): void | Promise<unknown> {
   if (!callback) {
     return promise;
   }
