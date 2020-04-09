@@ -32,7 +32,7 @@ describe("promiseOrCallback", () => {
     const error = new Error("a problem");
     const promise = functionThatReturnsARejectedPromise(error);
 
-    promiseOrCallback(promise, (err) => {
+    promiseOrCallback(promise, (err: Error) => {
       expect(err).toBe(error);
 
       done();
@@ -43,11 +43,14 @@ describe("promiseOrCallback", () => {
     const data = { foo: "bar" };
     const promise = functionThatReturnsAResolvedPromise(data);
 
-    promiseOrCallback(promise, (err, resolvedData) => {
-      expect(err).toBeFalsy();
-      expect(resolvedData).toBe(data);
+    promiseOrCallback(
+      promise,
+      (err: Error, resolvedData: Record<string, string>) => {
+        expect(err).toBeFalsy();
+        expect(resolvedData).toBe(data);
 
-      done();
-    });
+        done();
+      }
+    );
   });
 });

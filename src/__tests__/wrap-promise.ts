@@ -202,12 +202,12 @@ describe("wrapPromise", () => {
         transformMe(): Promise<string> {
           return Promise.resolve("yay");
         }
-        ignoreMe(cb): string {
+        ignoreMe(cb: Function): string {
           cb();
 
           return "not a promise";
         }
-        alsoIgnoreMe(cb): string {
+        alsoIgnoreMe(cb: Function): string {
           cb();
 
           return "also not a promise";
@@ -255,7 +255,7 @@ describe("wrapPromise", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
-        returnValue = obj.myAsyncMethod(true, (err, res) => {
+        returnValue = obj.myAsyncMethod(true, (err: Error, res: string) => {
           expect(returnValue).toBeUndefined();
           expect(err).toBeFalsy();
           expect(res).toBe("yay");
@@ -267,7 +267,7 @@ describe("wrapPromise", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
-        returnValue = obj.myAsyncMethod(false, (err, res) => {
+        returnValue = obj.myAsyncMethod(false, (err: Error, res: string) => {
           expect(returnValue).toBeUndefined();
           expect(res).toBeFalsy();
           expect(err).toBe("boo");
@@ -279,18 +279,21 @@ describe("wrapPromise", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
-        returnValue = obj.mySecondAsyncMethod(true, (err, res) => {
-          expect(returnValue).toBeUndefined();
-          expect(err).toBeFalsy();
-          expect(res).toBe("yay");
-          done();
-        });
+        returnValue = obj.mySecondAsyncMethod(
+          true,
+          (err: Error, res: string) => {
+            expect(returnValue).toBeUndefined();
+            expect(err).toBeFalsy();
+            expect(res).toBe("yay");
+            done();
+          }
+        );
       });
 
       it("respects `this`", (done) => {
         const obj = new MyObject("foo");
 
-        obj.myAsyncMethodWithContext((err, res) => {
+        obj.myAsyncMethodWithContext((err: Error, res: string) => {
           expect(res).toBe("foo");
           done();
         });
@@ -304,7 +307,7 @@ describe("wrapPromise", () => {
 
         expect(returnValue).toBeInstanceOf(Promise);
 
-        return returnValue.then((res) => {
+        return returnValue.then((res: string) => {
           expect(res).toBe("yay");
         });
       });
@@ -319,7 +322,7 @@ describe("wrapPromise", () => {
           .then(() => {
             throw new Error("should not get here");
           })
-          .catch((err) => {
+          .catch((err: string) => {
             expect(err).toBe("boo");
           });
       });
@@ -330,7 +333,7 @@ describe("wrapPromise", () => {
 
         expect(returnValue).toBeInstanceOf(Promise);
 
-        return returnValue.then((res) => {
+        return returnValue.then((res: string) => {
           expect(res).toBe("yay");
         });
       });
