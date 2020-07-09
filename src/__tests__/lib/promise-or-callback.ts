@@ -1,4 +1,4 @@
-import promiseOrCallback from "../../lib/promise-or-callback";
+import { promiseOrCallback } from "../../lib/promise-or-callback";
 import { noop } from "../helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

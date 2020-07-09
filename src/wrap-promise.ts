@@ -1,6 +1,6 @@
-import deferred from "./lib/deferred";
-import once from "./lib/once";
-import promiseOrCallback from "./lib/promise-or-callback";
+import { deferred } from "./lib/deferred";
+import { once } from "./lib/once";
+import { promiseOrCallback } from "./lib/promise-or-callback";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface ClassContructor {

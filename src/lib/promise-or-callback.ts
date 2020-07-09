@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-export default function promiseOrCallback<T>(
+export function promiseOrCallback<T>(
   promise: Promise<T>,
   callback?: (error: Error | null, data?: T) => void
 ): void | Promise<unknown> {
