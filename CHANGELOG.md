@@ -1,8 +1,8 @@
-# unreleased
+# CHANGELOG
+
+# 2.1.0
 
 - Add typescript types
-
-# CHANGELOG
 
 # 2.0.0
 
