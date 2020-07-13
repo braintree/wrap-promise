@@ -1,19 +1,23 @@
-CHANGELOG
-=========
+# unreleased
+
+- Add typescript types
+
+# CHANGELOG
 
 # 2.0.0
-*Breaking Changes*
 
-* Errors that are thrown in callback functions are now logged to the console (#4)
+_Breaking Changes_
+
+- Errors that are thrown in callback functions are now logged to the console (#4)
 
 # 1.1.1
 
-* Publish to npm as scoped package
+- Publish to npm as scoped package
 
 # 1.1.0
 
-* Add wrap-prototype function for wrapping all methods on a prototype
+- Add wrap-prototype function for wrapping all methods on a prototype
 
 # 1.0.0
 
-* Initial release
+- Initial release
