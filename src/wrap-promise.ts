@@ -14,7 +14,16 @@ type WrapPrototypeOptions = {
   transformPrivateMethods?: boolean;
 };
 
-function wrapPromise(fn: Function): Function {
+type FunctionThatReturnsAPromiseOrValue = (
+  ...args: unknown[]
+) => Promise<unknown> | unknown;
+type FunctionThatReturnsAPromiseOrCallback = (
+  ...args: unknown[]
+) => ReturnType<typeof promiseOrCallback>;
+
+function wrapPromise(
+  fn: FunctionThatReturnsAPromiseOrValue
+): FunctionThatReturnsAPromiseOrCallback {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (...args: any[]): ReturnType<typeof promiseOrCallback> {
     let callback;
@@ -27,7 +36,7 @@ function wrapPromise(fn: Function): Function {
 
     // I know, I know, this looks bad. But it's a quirk of the library that
     // we need to allow passing the this context to the original function
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: this has an implicit any
     return promiseOrCallback(fn.apply(this, args), callback); // eslint-disable-line no-invalid-this
   };

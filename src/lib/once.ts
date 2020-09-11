@@ -1,4 +1,6 @@
-export function once(fn: (...args: unknown[]) => void): Function {
+export function once(
+  fn: (...args: unknown[]) => void
+): (...args: Parameters<typeof fn>) => void {
   let called = false;
 
   return function (...args: Parameters<typeof fn>): void {

@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import wrapPromise = require("../wrap-promise");
 import { noop } from "./helpers";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface ClassContructor {
-  new (...args: any[]): any;
-  [propName: string]: any;
-}
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 describe("wrapPromise", () => {
   let testContext: Record<string, string>;
@@ -198,16 +191,18 @@ describe("wrapPromise", () => {
     });
 
     it("can pass in an options object to ignore methods", () => {
+      type DummyFunction = () => void;
+
       class MyOtherObject {
         transformMe(): Promise<string> {
           return Promise.resolve("yay");
         }
-        ignoreMe(cb: Function): string {
+        ignoreMe(cb: DummyFunction): string {
           cb();
 
           return "not a promise";
         }
-        alsoIgnoreMe(cb: Function): string {
+        alsoIgnoreMe(cb: DummyFunction): string {
           cb();
 
           return "also not a promise";
