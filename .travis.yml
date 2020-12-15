@@ -1,9 +1,0 @@
-language: node_js
-notifications:
-  email: false
-  slack:
-    on_success: change
-    on_failure: always
-    on_pull_requests: false
-    rooms:
-      - secure: ZiyVvDcO5LnMAFaRFxbUR18MOkVU6fhHcBeSPfzeW4Lvr4kJTmTIowRxJRGoOoog18Au8OiYLXsfnhECCrFdqP3imBDoRzyX12UxEcCIVDyOs/GsCCnR7219jRUOzmW6OxI+Tt4Gy5jT00c7aZPK1zFerGG53s1DVrCVt3CYuQb8iTfpHxOsQ/+ki7fbs8m0qqfg/8cFsiCg/xdyQL7//r7SQBLDoigTVd7yXIkCKPuCIJMn+U8Omh3gcFfCLw46aPGv6+WKvo57CNzw9w8zJ6DBHHUw5STqngteym3n2/4LpljVKYYRg1O/yEE3NdNYqkE/FPVVcv9FHYOhLKFRTcUaV8LMKO7zzqCbk1L9p4+4R+ileqWiMe35aRkcdUv1oC5pQGngVFVhh+BoBsIxi7exRagqAFpbWfVtC5y5ao+QNLYeyIqSUC8UqGc8kIs6uHFtfd5ybw2sTSyW1c/5rU82B+ZCnne7ovxDbiA4F/Mjj2hI6cD+KpBoZ+z3fUwVLhpxAGF1BKoXWw712IuKXHJ9wYT0HULLRrxDBBvLp4JYe4qQ9DKtbiARhrwgMPTWpVGRxzpX3ryExVFrcReau+pv2XFZ6mwdAA1eDVs1rTshDP5wlHbeKgFGwvV2444v9p7MRENN+1N+cR+qYZciqwtTmU4EOzIbvOMxVxCZgcY=
