@@ -3,8 +3,10 @@
 # Unreleased
 
 - Update to node v18
-- Update to TypeScript 5
-- Update other minor dependencies to latest minor version
+
+- Dev Dependency Updates
+  - Update to TypeScript 5
+  - Update other minor dependencies to latest minor version
 
 # 2.1.0
 
