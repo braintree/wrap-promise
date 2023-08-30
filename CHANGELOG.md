@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# Unreleased
+
+- Update to node v18
+
+- Dev Dependency Updates
+  - Update to TypeScript 5
+  - Update other minor dependencies to latest minor version
+
 # 2.1.0
 
 - Add typescript types
