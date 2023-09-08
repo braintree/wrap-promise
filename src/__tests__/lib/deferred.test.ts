@@ -1,11 +1,10 @@
 import { deferred } from "../../lib/deferred";
+import { vi } from "vitest";
 
 describe("deferred", () => {
-  it("delays the call to the function", (done) => {
-    const fn = jest.fn((...rest) => {
+  it("delays the call to the function", () => {
+    const fn = vi.fn((...rest) => {
       expect(rest).toHaveLength(0);
-
-      done();
     });
     const def = deferred(fn);
 
@@ -14,13 +13,11 @@ describe("deferred", () => {
     expect(fn).not.toBeCalled();
   });
 
-  it("can pass arguments to the deferred function", (done) => {
-    const fn = jest.fn((a, b, ...rest) => {
+  it("can pass arguments to the deferred function", () => {
+    const fn = vi.fn((a, b, ...rest) => {
       expect(rest).toHaveLength(0);
       expect(a).toBe(1);
       expect(b).toBe(2);
-
-      done();
     });
     const def = deferred(fn);
 
@@ -29,14 +26,14 @@ describe("deferred", () => {
     expect(fn).not.toBeCalled();
   });
 
-  it("sends message to console if function throws an error", (done) => {
+  it("sends message to console if function throws an error", () => {
     const error = new Error("simulated error");
 
     function funcThatThrows(): void {
       throw error;
     }
     const def = deferred(funcThatThrows);
-    console.log = jest.fn(); // eslint-disable-line no-console
+    console.log = vi.fn(); // eslint-disable-line no-console
 
     def();
 
@@ -45,9 +42,6 @@ describe("deferred", () => {
       expect(console.log).toBeCalledTimes(2);
       expect(console.log).toBeCalledWith("Error in callback function");
       expect(console.log).toBeCalledWith(error);
-      /* eslint-enable no-console */
-
-      done();
     }, 5);
   });
 });

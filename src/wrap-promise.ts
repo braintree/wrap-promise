@@ -1,25 +1,12 @@
 import { deferred } from "./lib/deferred";
 import { once } from "./lib/once";
 import { promiseOrCallback } from "./lib/promise-or-callback";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface ClassContructor {
-  new (...args: any[]): any;
-  [propName: string]: any;
-}
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-type WrapPrototypeOptions = {
-  ignoreMethods?: string[];
-  transformPrivateMethods?: boolean;
-};
-
-type FunctionThatReturnsAPromiseOrValue = (
-  ...args: unknown[]
-) => Promise<unknown> | unknown;
-type FunctionThatReturnsAPromiseOrCallback = (
-  ...args: unknown[]
-) => ReturnType<typeof promiseOrCallback>;
+import {
+  ClassContructor,
+  WrapPrototypeOptions,
+  FunctionThatReturnsAPromiseOrCallback,
+  FunctionThatReturnsAPromiseOrValue,
+} from "./types";
 
 function wrapPromise(
   fn: FunctionThatReturnsAPromiseOrValue
@@ -77,4 +64,4 @@ wrapPromise.wrapPrototype = function (
   return target;
 };
 
-export = wrapPromise;
+export default wrapPromise;

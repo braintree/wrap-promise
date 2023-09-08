@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { promiseOrCallback } from "../../lib/promise-or-callback";
-import { noop } from "../helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function functionThatReturnsAResolvedPromise(data?: any): Promise<any> {
@@ -24,31 +24,27 @@ describe("promiseOrCallback", () => {
 
   it("does not return a promise if a callback is provided", () => {
     const promise = functionThatReturnsAResolvedPromise();
-    const isPromise = promiseOrCallback(promise, noop);
+    const isPromise = promiseOrCallback(promise, () => {});
 
     expect(isPromise).not.toBeInstanceOf(Promise);
   });
 
-  it("calls callback with error caught from promise", (done) => {
+  it("calls callback with error caught from promise", () => {
     const error = new Error("a problem");
     const promise = functionThatReturnsARejectedPromise(error);
 
     promiseOrCallback(promise, (err) => {
       expect(err).toBe(error);
-
-      done();
     });
   });
 
-  it("calls callback with data resolved from promise", (done) => {
+  it("calls callback with data resolved from promise", () => {
     const data = { foo: "bar" };
     const promise = functionThatReturnsAResolvedPromise(data);
 
     promiseOrCallback(promise, (err, resolvedData) => {
       expect(err).toBeFalsy();
       expect(resolvedData).toBe(data);
-
-      done();
     });
   });
 });
