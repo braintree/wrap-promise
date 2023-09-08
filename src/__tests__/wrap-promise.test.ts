@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import wrapPromise = require("../wrap-promise");
-import { noop } from "./helpers";
+import wrapPromise from "../wrap-promise";
+import { vi } from "vitest";
 
 describe("wrapPromise", () => {
   let testContext: Record<string, string>;
@@ -10,7 +11,7 @@ describe("wrapPromise", () => {
   });
 
   it("returns a function", () => {
-    const fn = wrapPromise(noop);
+    const fn = wrapPromise(() => {});
 
     expect(fn).toBeInstanceOf(Function);
   });
@@ -23,15 +24,13 @@ describe("wrapPromise", () => {
       expect(fn()).toBe(returnValue);
     });
 
-    it("passes argument to first parameter", (done) => {
+    it("passes argument to first parameter", () => {
       const options = {
         foo: "bar",
       };
 
       function dummy(data: unknown): void {
         expect(data).toBe(options);
-
-        done();
       }
 
       const fn = wrapPromise(dummy);
@@ -39,7 +38,7 @@ describe("wrapPromise", () => {
       fn(options);
     });
 
-    it("passes along many arguments to first parameter", (done) => {
+    it("passes along many arguments to first parameter", () => {
       const firstArg = {
         foo: "bar",
       };
@@ -54,8 +53,6 @@ describe("wrapPromise", () => {
         expect(one).toBe(firstArg);
         expect(two).toBe(secondArg);
         expect(three).toBe(thirdArg);
-
-        done();
       }
 
       const fn = wrapPromise(dummy);
@@ -66,41 +63,37 @@ describe("wrapPromise", () => {
 
   describe("last parameter is a callback", () => {
     it("does not pass callback to the first param function", () => {
-      const promise = new Promise(noop);
-      const dummy = jest.fn(() => promise);
+      const promise = new Promise(() => {});
+      const dummy = vi.fn(() => promise);
       const fn = wrapPromise(dummy);
       const arg1 = {};
       const arg2 = {};
 
-      fn(arg1, arg2, noop);
+      fn(arg1, arg2, () => {});
 
       expect(dummy).toBeCalledTimes(1);
       expect(dummy).toBeCalledWith(arg1, arg2);
     });
 
-    it("calls the callback with resolved promise", (done) => {
+    it("calls the callback with resolved promise", () => {
       const data = { foo: "bar" };
       const promise = Promise.resolve(data);
-      const fn = wrapPromise(jest.fn(() => promise));
+      const fn = wrapPromise(vi.fn(() => promise));
 
       fn({}, (err: unknown, resolvedData: unknown) => {
         expect(err).toBeFalsy();
         expect(resolvedData).toBe(data);
-
-        done();
       });
     });
 
-    it("calls the callback with rejected promise", (done) => {
+    it("calls the callback with rejected promise", () => {
       const error = new Error("An Error");
       const promise = Promise.reject(error);
-      const fn = wrapPromise(jest.fn(() => promise));
+      const fn = wrapPromise(vi.fn(() => promise));
 
       fn({}, (err: unknown, resolvedData: unknown) => {
         expect(resolvedData).toBeFalsy();
         expect(err).toBe(error);
-
-        done();
       });
     });
   });
@@ -158,7 +151,7 @@ describe("wrapPromise", () => {
     const MyObject = wrapPromise.wrapPrototype(CustomObject);
 
     it("ignores static methods", () => {
-      const returnValue = MyObject.myStaticMethod(true, noop);
+      const returnValue = MyObject.myStaticMethod(true, () => {});
 
       // if it had converted it, the return
       // value would be undefined
@@ -181,13 +174,13 @@ describe("wrapPromise", () => {
     it("ignores private methods", () => {
       const obj = new MyObject();
 
-      expect(obj._myPrivateMethod(noop)).toBeInstanceOf(Promise);
+      expect(obj._myPrivateMethod(() => {})).toBeInstanceOf(Promise);
     });
 
     it("ignores the constructor", () => {
       const obj = new MyObject();
 
-      expect(obj.constructor.toString()).toMatch(/^function CustomObject\(/);
+      expect(obj.constructor.toString()).toMatch(/^class\s+CustomObject\s*{/);
     });
 
     it("can pass in an options object to ignore methods", () => {
@@ -216,16 +209,16 @@ describe("wrapPromise", () => {
       const obj = new MyOtherObject();
 
       // @ts-ignore: this is what the sdk does. Adds an optional callback argument to a promise api
-      expect(obj.transformMe(noop)).toBeUndefined();
+      expect(obj.transformMe(() => {})).toBeUndefined();
       expect(() => {
-        obj.ignoreMe(noop);
+        obj.ignoreMe(() => {});
       }).not.toThrowError();
       expect(() => {
-        obj.alsoIgnoreMe(noop);
+        obj.alsoIgnoreMe(() => {});
       }).not.toThrowError();
     });
 
-    it("can pass in an options object to include methods with leading underscores", (done) => {
+    it("can pass in an options object to include methods with leading underscores", () => {
       class MyOtherObject {
         _doNotIgnoreMe(): Promise<string> {
           return Promise.resolve("yay");
@@ -241,12 +234,11 @@ describe("wrapPromise", () => {
       // @ts-ignore: this is what the sdk does. Adds an optional callback argument to a promise api
       obj._doNotIgnoreMe((err, res) => {
         expect(res).toBe("yay");
-        done();
       });
     });
 
     describe("wraps each method on the prototype to use callbacks", () => {
-      it("happy path", (done) => {
+      it("happy path", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
@@ -254,11 +246,10 @@ describe("wrapPromise", () => {
           expect(returnValue).toBeUndefined();
           expect(err).toBeFalsy();
           expect(res).toBe("yay");
-          done();
         });
       });
 
-      it("sad path", (done) => {
+      it("sad path", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
@@ -266,11 +257,10 @@ describe("wrapPromise", () => {
           expect(returnValue).toBeUndefined();
           expect(res).toBeFalsy();
           expect(err).toBe("boo");
-          done();
         });
       });
 
-      it("works on all protoypical methods", (done) => {
+      it("works on all protoypical methods", () => {
         const obj = new MyObject();
         let returnValue = "not undefined";
 
@@ -280,17 +270,15 @@ describe("wrapPromise", () => {
             expect(returnValue).toBeUndefined();
             expect(err).toBeFalsy();
             expect(res).toBe("yay");
-            done();
           }
         );
       });
 
-      it("respects `this`", (done) => {
+      it("respects `this`", () => {
         const obj = new MyObject("foo");
 
         obj.myAsyncMethodWithContext((err: Error, res: string) => {
           expect(res).toBe("foo");
-          done();
         });
       });
     });
