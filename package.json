@@ -2,13 +2,21 @@
   "name": "@braintree/wrap-promise",
   "version": "3.0.2",
   "description": "A small lib to return promises or use callbacks",
-  "main": "dist/wrap-promise.js",
-  "types": "dist/wrap-promise.d.ts",
+  "main": "./dist/cjs/wrap-promise.js",
+  "module": "./dist/mjs/wrap-promise.js",
+  "types": "./dist/mjs/wrap-promise.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/wrap-promise.js",
+      "import": "./dist/mjs/wrap-promise.js",
+      "types": "./dist/mjs/wrap-promise.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
   "devDependencies": {
-    "@types/jest": "^29.5.3",
+    "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "eslint": "^8.35.0",
     "eslint-config-braintree": "^6.0.0-typescript-prep-rc.2",
@@ -21,7 +29,9 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "prebuild": "prettier --write .",
-    "build": "tsc --declaration",
+    "build": "rm -rf dist/ && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json --declaration",
     "lint": "eslint --ext .js,.ts .",
     "posttest": "npm run lint",
     "test": "jest"

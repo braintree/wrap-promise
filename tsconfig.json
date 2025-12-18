@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-    "outDir": "./dist",
     "allowJs": true,
-    "target": "es5",
-    "lib": ["es2015", "dom"]
+    "moduleResolution": "node",
+    "lib": ["es2015", "dom", "esnext"],
+    "pretty": true,
+    "types": ["node", "jest"]
   },
   "include": ["./src/**/*"],
-  "exclude": ["**/__tests__/*"]
+  "exclude": ["**/__tests__/*", "dist", "node_modules"]
 }

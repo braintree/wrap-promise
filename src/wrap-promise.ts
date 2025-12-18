@@ -77,4 +77,4 @@ wrapPromise.wrapPrototype = function (
   return target;
 };
 
-export = wrapPromise;
+export default wrapPromise;

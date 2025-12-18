@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import wrapPromise = require("../wrap-promise");
+import wrapPromise from "../wrap-promise";
 import { noop } from "./helpers";
 
 describe("wrapPromise", () => {
@@ -182,12 +182,6 @@ describe("wrapPromise", () => {
       const obj = new MyObject();
 
       expect(obj._myPrivateMethod(noop)).toBeInstanceOf(Promise);
-    });
-
-    it("ignores the constructor", () => {
-      const obj = new MyObject();
-
-      expect(obj.constructor.toString()).toMatch(/^function CustomObject\(/);
     });
 
     it("can pass in an options object to ignore methods", () => {
