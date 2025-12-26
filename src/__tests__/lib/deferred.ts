@@ -11,7 +11,7 @@ describe("deferred", () => {
 
     def();
 
-    expect(fn).not.toBeCalled();
+    expect(fn).not.toHaveBeenCalled();
   });
 
   it("can pass arguments to the deferred function", (done) => {
@@ -26,7 +26,7 @@ describe("deferred", () => {
 
     def(1, 2);
 
-    expect(fn).not.toBeCalled();
+    expect(fn).not.toHaveBeenCalled();
   });
 
   it("sends message to console if function throws an error", (done) => {
@@ -42,9 +42,9 @@ describe("deferred", () => {
 
     setTimeout(() => {
       /* eslint-disable no-console */
-      expect(console.log).toBeCalledTimes(2);
-      expect(console.log).toBeCalledWith("Error in callback function");
-      expect(console.log).toBeCalledWith(error);
+      expect(console.log).toHaveBeenCalledTimes(2);
+      expect(console.log).toHaveBeenCalledWith("Error in callback function");
+      expect(console.log).toHaveBeenCalledWith(error);
       /* eslint-enable no-console */
 
       done();

@@ -9,17 +9,17 @@ describe("once", () => {
     }
     const funcOnlyCalledOnce = once(func);
 
-    expect(spy).not.toBeCalled();
+    expect(spy).not.toHaveBeenCalled();
 
     funcOnlyCalledOnce();
 
-    expect(spy).toBeCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
 
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
     funcOnlyCalledOnce();
 
-    expect(spy).toBeCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

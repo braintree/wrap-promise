@@ -74,8 +74,8 @@ describe("wrapPromise", () => {
 
       fn(arg1, arg2, noop);
 
-      expect(dummy).toBeCalledTimes(1);
-      expect(dummy).toBeCalledWith(arg1, arg2);
+      expect(dummy).toHaveBeenCalledTimes(1);
+      expect(dummy).toHaveBeenCalledWith(arg1, arg2);
     });
 
     it("calls the callback with resolved promise", (done) => {
@@ -219,10 +219,10 @@ describe("wrapPromise", () => {
       expect(obj.transformMe(noop)).toBeUndefined();
       expect(() => {
         obj.ignoreMe(noop);
-      }).not.toThrowError();
+      }).not.toThrow();
       expect(() => {
         obj.alsoIgnoreMe(noop);
-      }).not.toThrowError();
+      }).not.toThrow();
     });
 
     it("can pass in an options object to include methods with leading underscores", (done) => {

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## UNRELEASED
+
+- Update dependencies
+  - @types/jest to 30.0.0
+  - jest to 30.2.0
+  - ts-jest to 29.4.6
+  - typescript to 5.9.3
+- Update Node to v24
+
 ## 3.0.2
 
 - Update (sub-)dependencies
