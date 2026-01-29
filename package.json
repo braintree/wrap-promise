@@ -1,6 +1,6 @@
 {
   "name": "@braintree/wrap-promise",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A small lib to return promises or use callbacks",
   "main": "dist/wrap-promise.js",
   "types": "dist/wrap-promise.d.ts",
