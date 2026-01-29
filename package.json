@@ -9,6 +9,7 @@
   ],
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "@types/jest": "^24.0.0",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "eslint": "^8.35.0",
     "eslint-config-braintree": "^6.0.0-typescript-prep-rc.2",

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## UNRELEASED
+## 3.0.3
 
 - Update dependencies
   - @types/jest to 30.0.0
@@ -8,6 +8,7 @@
   - ts-jest to 29.4.6
   - typescript to 5.9.3
 - Update Node to v24
+- Add @types/node 24.0.0
 
 ## 3.0.2
 
@@ -33,9 +34,8 @@
 
 ## 2.0.0
 
-_Breaking Changes_
-
-- Errors that are thrown in callback functions are now logged to the console (#4)
+- BREAKING CHANGES
+  - Errors that are thrown in callback functions are now logged to the console (#4)
 
 ## 1.1.1
 
