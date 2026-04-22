@@ -2,6 +2,8 @@
 
 ## UNRELEASED
 
+- feat(deps): Add [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) to the repo
+
 ## 3.0.4
 
 - Add @types/node 24.0.0
